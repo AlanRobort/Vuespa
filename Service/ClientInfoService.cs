@@ -45,6 +45,7 @@ namespace Service
 
         public int GetClinetAccesstimes() 
         {
+            //qqq
             //var first = _studentDbContext.clientAddressInfos.First();
             //_studentDbContext.clientAddressInfos.Select(t=>t.Accessingtime<=DateTime.Now&&t.Accessingtime> first.Accessingtime);
             //_studentDbContext.clientAddressInfos.Count()
