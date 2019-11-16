@@ -8,7 +8,8 @@ namespace Service
 {
   public  interface IClientInfoService
     {
-       bool saveClientAddressAsync(string IpClientAddresss);
-        int GetClinetAccesstimes();
+       bool saveClientAddress(string IpClientAddresss);
+        //int SaveClinetAccesstimes();
+        
     }
 }

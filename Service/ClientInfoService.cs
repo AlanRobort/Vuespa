@@ -18,7 +18,7 @@ namespace Service
             _studentDbContext = studentDbContext;
         }
 
-        public bool saveClientAddressAsync(string ClientIpAddress)
+        public bool saveClientAddress(string ClientIpAddress)
         {
             if (ClientIpAddress!=null) 
             {
@@ -26,13 +26,18 @@ namespace Service
                 clientdata.Accessingtime = DateTime.Now;
                 clientdata.ClientAddress = ClientIpAddress;
 
-               
-
                 _studentDbContext.clientAddressInfos.Add(clientdata);
 
                 var result =   _studentDbContext.SaveChanges();
                 if (result > 0)
                 {
+                    //每次保存都存
+                    int Count =  SaveClinetAccesstimes();
+                    ClientAccessTimes clientAccessTimes = new ClientAccessTimes();
+                    clientAccessTimes.Count = Count;
+                    clientAccessTimes.dateTime = DateTime.Now;
+                    _studentDbContext.clientAccessTimes.Add(clientAccessTimes);
+                    _studentDbContext.SaveChanges();
                     return true;
                 }
                 else 
@@ -43,12 +48,12 @@ namespace Service
             return false;
         }
 
-        public int GetClinetAccesstimes() 
+        private  int SaveClinetAccesstimes()
         {
-            //qqq
-            //var first = _studentDbContext.clientAddressInfos.First();
-            //_studentDbContext.clientAddressInfos.Select(t=>t.Accessingtime<=DateTime.Now&&t.Accessingtime> first.Accessingtime);
-            //_studentDbContext.clientAddressInfos.Count()
+            var ClientCount =  _studentDbContext.clientAddressInfos.Count();
+            return ClientCount;
         }
+
+       
     }
 }

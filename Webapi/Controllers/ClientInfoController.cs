@@ -26,7 +26,7 @@ namespace Webapi.Controllers
 
         // GET: ClientInfo
         [HttpGet]
-        public int GetClientAddress()
+        public IActionResult GetClientAddress()
         {
             //_accessor.HttpContext.Connection.RemoteIpAddress.ToString()
             //var result = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
@@ -39,12 +39,12 @@ namespace Webapi.Controllers
                  result = Request.Headers["Client"].ToString();
                 //if (string.IsNullOrEmpty(result)) 
                 //{
-                    _clientInfoService.saveClientAddressAsync(result);
+                    _clientInfoService.saveClientAddress(result);
+                return Ok(result);
                // }
             }
-            var count = _clientInfoService.GetClinetAccesstimes();
-            
-            return count;
+
+            return Ok("未获取到用户IP信息");
 
         }
 
