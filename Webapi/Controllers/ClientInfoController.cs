@@ -5,7 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Model;
 using Service;
+using Webapi.ViewModel;
 
 namespace Webapi.Controllers
 {
@@ -45,6 +47,29 @@ namespace Webapi.Controllers
             }
 
             return Ok("未获取到用户IP信息");
+ 
+        }
+
+        [HttpPost]
+        public async Task<IEnumerable<ClientAccessTimesViewmodel>> GetBardata() 
+        {
+           var  result = await  _clientInfoService.GetClientAccessTimes();
+            var re = new List<ClientAccessTimesViewmodel>();
+            foreach (var i in  result)
+            {
+                re.Add(new ClientAccessTimesViewmodel() { 
+                    id=i.id,
+                    Count = i.Count,
+                    dateTime = i.dateTime.ToString("yyyy-MM-dd")
+                });
+            }
+            
+           
+            return re;
+
+
+
+
 
         }
 

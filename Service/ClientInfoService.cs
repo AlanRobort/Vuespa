@@ -18,6 +18,12 @@ namespace Service
             _studentDbContext = studentDbContext;
         }
 
+        public async Task<IEnumerable<ClientAccessTimes>> GetClientAccessTimes()
+        {
+          var reuslt = await _studentDbContext.clientAccessTimes.ToListAsync();
+          return reuslt;
+        }
+
         public bool saveClientAddress(string ClientIpAddress)
         {
             if (ClientIpAddress!=null) 
@@ -54,6 +60,8 @@ namespace Service
             var ClientCount =  _studentDbContext.clientAddressInfos.Count();
             return ClientCount;
         }
+
+
 
        
     }

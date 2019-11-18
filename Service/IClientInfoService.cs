@@ -10,6 +10,6 @@ namespace Service
     {
        bool saveClientAddress(string IpClientAddresss);
         //int SaveClinetAccesstimes();
-        
+        Task<IEnumerable<ClientAccessTimes>> GetClientAccessTimes();
     }
 }
