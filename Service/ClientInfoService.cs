@@ -23,6 +23,9 @@ namespace Service
            //var query = from a in _studentDbContext.clientAccessTimes select a;
            
             var result = await _studentDbContext.clientAccessTimes.ToListAsync();
+            
+
+            
           return result;
         }
 
