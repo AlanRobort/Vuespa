@@ -20,8 +20,10 @@ namespace Service
 
         public async Task<IEnumerable<ClientAccessTimes>> GetClientAccessTimes()
         {
-          var reuslt = await _studentDbContext.clientAccessTimes.ToListAsync();
-          return reuslt;
+           //var query = from a in _studentDbContext.clientAccessTimes select a;
+           
+            var result = await _studentDbContext.clientAccessTimes.ToListAsync();
+          return result;
         }
 
         public bool saveClientAddress(string ClientIpAddress)
@@ -37,14 +39,32 @@ namespace Service
                 var result =   _studentDbContext.SaveChanges();
                 if (result > 0)
                 {
-                    //qkqkqk
+                   
                     //每次保存都存
                     int Count =  SaveClinetAccesstimes();
+                    //如果clientinfo的时间是当天时间则是更新
+
                     ClientAccessTimes clientAccessTimes = new ClientAccessTimes();
-                    clientAccessTimes.Count = Count;
-                    clientAccessTimes.dateTime = DateTime.Now;
-                    _studentDbContext.clientAccessTimes.Add(clientAccessTimes);
-                    _studentDbContext.SaveChanges();
+                    var Original = _studentDbContext.clientAccessTimes.FirstOrDefault(x => x.dateTime.Date == clientdata.Accessingtime.Date);
+                    if (Original!=null)
+                    {
+                       
+                        Original.Count += 1;
+                        _studentDbContext.SaveChanges();
+                    }
+                    else
+                    { 
+                        //如果clientinfo的时候不是当天则添加
+                        
+                        clientAccessTimes.dateTime = DateTime.Now;
+                        clientAccessTimes.Count += 1;
+                        _studentDbContext.clientAccessTimes.Add(clientAccessTimes);
+                        //int resultCount = _studentDbContext.SaveChanges();
+                        
+                    }
+                   
+                   
+                   // _studentDbContext.SaveChanges();
                     return true;
                 }
                 else 
