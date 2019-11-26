@@ -1,4 +1,5 @@
 ﻿using Model;
+using Service.extend;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,5 +12,6 @@ namespace Service
        bool saveClientAddress(string IpClientAddresss);
         //int SaveClinetAccesstimes();
         Task<IEnumerable<ClientAccessTimes>> GetClientAccessTimes();
+        Task<IEnumerable<ClientAddressInfo>> GetAllAddressInfo(PaginationParamer paginationParamer);
     }
 }

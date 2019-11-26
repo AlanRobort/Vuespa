@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Model;
 using Persistence;
+using Service.extend;
 
 namespace Service
 {
@@ -16,6 +17,23 @@ namespace Service
         public ClientInfoService(StudentDbContext studentDbContext)
         {
             _studentDbContext = studentDbContext;
+        }
+
+        public async Task<IEnumerable<ClientAddressInfo>> GetAllAddressInfo(PaginationParamer paginationParamer)
+        {
+            //var result = new List<ClientAddressInfo>();
+            //var linqresult = from c in _studentDbContext.clientAddressInfos
+            //              select c;
+            // var result = await linqresult.ToListAsync();
+            // return result;
+            var query = _studentDbContext.clientAddressInfos.OrderBy(x => x.Id);
+            var count = await query.CountAsync();
+            var items = await query
+                 .Skip(paginationParamer.PageSize * paginationParamer.PageIndex)
+                 .Take(paginationParamer.PageSize)
+                 .ToListAsync();
+
+            return new PaginatedList<ClientAddressInfo>(paginationParamer.PageIndex, paginationParamer.PageSize, count, items);
         }
 
         public async Task<IEnumerable<ClientAccessTimes>> GetClientAccessTimes()
