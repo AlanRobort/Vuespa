@@ -11,7 +11,10 @@ namespace Service
     {
        bool saveClientAddress(string IpClientAddresss);
         //int SaveClinetAccesstimes();
+        
+        Task<IEnumerable<ClientAddressInfo>> GetAll();
+
         Task<IEnumerable<ClientAccessTimes>> GetClientAccessTimes();
-        Task<IEnumerable<ClientAddressInfo>> GetAllAddressInfo(PaginationParamer paginationParamer);
+        Task<PaginatedList<ClientAddressInfo>> GetAllAddressInfo(PaginationParamer paginationParamer);
     }
 }

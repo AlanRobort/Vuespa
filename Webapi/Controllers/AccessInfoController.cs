@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Newtonsoft.Json;
 using Service;
 using Service.extend;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Webapi.Controllers
 {
+    [EnableCors("AllowSpecificOrigin")]
     [Route("api/ClientInfo/[controller]")]
     [ApiController]
     public class AccessInfoController : ControllerBase
@@ -26,46 +26,73 @@ namespace Webapi.Controllers
             _urlHelper = urlHelper;
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    var result = await _clientInfoService.GetAll();
+        //    return Ok(result);
+        //}
 
-        [HttpGet]
-        public async Task<IEnumerable<ClientAddressInfo>> GetAccessinfoAll([FromQuery] PaginationParamer paginationParamer) 
+
+        [HttpGet(Name= "GetAccessinfo")]
+        public async Task<IActionResult> GetAccessinfoAll([FromQuery] PaginationParamer paginationParamer) 
         {
             //PaginationParamer paginationParamer = new PaginationParamer();
             //paginationParamer.PageIndex = PageIndex;
             //paginationParamer.PageSize = PageSize;
-            var Accessinfo = await _clientInfoService.GetAllAddressInfo(paginationParamer);
-          return Accessinfo;
+            var AccessinfoList = await _clientInfoService.GetAllAddressInfo(paginationParamer);
+            var previousParameter = AccessinfoList.HasPrevious
+                ? CreateAccessinfoUrl(paginationParamer, PaginationResourceUrlType.PreviousPage):null;
+            var nextPatameter = AccessinfoList.HasNext
+                ? CreateAccessinfoUrl(paginationParamer, PaginationResourceUrlType.NextPage) : null;
+
+            var meta = new
+            {
+                AccessinfoList.TotalItemCount,
+                AccessinfoList.paginationBase.PageIndex,
+                AccessinfoList.paginationBase.PageSize,
+                AccessinfoList.PageCount,
+                previouslink = previousParameter,
+                nextlink = nextPatameter
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(meta));
+
+          return Ok(AccessinfoList);
         }
 
-        //private string CreateAccessinfoUrl(PaginationParamer paginationParamer, PaginationResourceUrlType paginationResourceUrlType) 
-        //{
-        //    switch (paginationResourceUrlType) 
-        //    {
-        //        case PaginationResourceUrlType.PreviousPage:
-        //            var previousParameters = new
-        //            {
-        //                PageIndex = paginationParamer.PageIndex,
-        //                pageSize = paginationParamer.PageSize
-        //                //OrderBy=paginationParamer.OrderBy
-        //            };
-        //            return _urlHelper.Link("GetCountries", previousParameters);
-        //        case PaginationResourceUrlType.NextPage:
-        //            var NextPageParameters = new
-        //            {
-        //                PageIndex = paginationParamer.PageIndex,
-        //                pageSize = paginationParamer.PageSize
-        //                //OrderBy=paginationParamer.OrderBy
-        //            };
-        //            return _urlHelper.Link("GetCountries", NextPageParameters);
-        //        case PaginationResourceUrlType.CurrentPage:
-        //            var CurrentPageParameters = new
-        //            {
-        //                PageIndex = paginationParamer.PageIndex,
-        //                pageSize = paginationParamer.PageSize
-        //                //OrderBy=paginationParamer.OrderBy
-        //            };
-        //            return _urlHelper.Link("GetCountries", CurrentPageParameters);
-        //    }
-        //}
+
+        private string CreateAccessinfoUrl(PaginationParamer paginationParamer, PaginationResourceUrlType paginationResourceUrlType)
+        {
+            switch (paginationResourceUrlType)
+            {
+                case PaginationResourceUrlType.PreviousPage:
+                    var previousParameters = new
+                    {
+                        PageIndex = paginationParamer.PageIndex-1,
+                        pageSize = paginationParamer.PageSize
+                        //OrderBy=paginationParamer.OrderBy
+                    };
+                    return _urlHelper.Link("GetAccessinfo", previousParameters);
+                case PaginationResourceUrlType.NextPage:
+                    var NextPageParameters = new
+                    {
+                        PageIndex = paginationParamer.PageIndex+1,
+                        pageSize = paginationParamer.PageSize
+                        //OrderBy=paginationParamer.OrderBy
+                    };
+                    return _urlHelper.Link("GetAccessinfo", NextPageParameters);
+                case PaginationResourceUrlType.CurrentPage:
+                default:
+                    var CurrentPageParameters = new
+                    {
+                        PageIndex = paginationParamer.PageIndex,
+                        pageSize = paginationParamer.PageSize
+                        //OrderBy=paginationParamer.OrderBy
+                    };
+                    return _urlHelper.Link("GetAccessinfo", CurrentPageParameters);
+               
+            }
+        }
     }
 }

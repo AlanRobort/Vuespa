@@ -19,7 +19,14 @@ namespace Service
             _studentDbContext = studentDbContext;
         }
 
-        public async Task<IEnumerable<ClientAddressInfo>> GetAllAddressInfo(PaginationParamer paginationParamer)
+        public async Task<IEnumerable<ClientAddressInfo>> GetAll()
+        {
+           var query =  from c in _studentDbContext.clientAddressInfos
+            select c;
+            return await query.ToListAsync();
+        }
+
+        public async Task<PaginatedList<ClientAddressInfo>> GetAllAddressInfo(PaginationParamer paginationParamer)
         {
             //var result = new List<ClientAddressInfo>();
             //var linqresult = from c in _studentDbContext.clientAddressInfos
@@ -27,13 +34,14 @@ namespace Service
             // var result = await linqresult.ToListAsync();
             // return result;
             var query = _studentDbContext.clientAddressInfos.OrderBy(x => x.Id);
+            //74
             var count = await query.CountAsync();
             var items = await query
                  .Skip(paginationParamer.PageSize * paginationParamer.PageIndex)
                  .Take(paginationParamer.PageSize)
                  .ToListAsync();
 
-            return new PaginatedList<ClientAddressInfo>(paginationParamer.PageIndex, paginationParamer.PageSize, count, items);
+            return new PaginatedList<ClientAddressInfo>(paginationParamer.PageIndex, count, paginationParamer.PageSize, items);
         }
 
         public async Task<IEnumerable<ClientAccessTimes>> GetClientAccessTimes()
