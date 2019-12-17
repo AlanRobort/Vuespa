@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
+using Service;
 
 namespace Webapi.Controllers
 {
@@ -15,8 +16,16 @@ namespace Webapi.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IUserService _userService;
+
+        public AuthController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
+
         [HttpPost("token")]
-        public IActionResult TokenResult()
+        public async Task<IActionResult> TokenResult()
         {
             var getheader = Request.Headers["Authorization"];
             if (getheader.ToString().StartsWith("Basic")) 
@@ -26,7 +35,9 @@ namespace Webapi.Controllers
                 var UsernameandPassword = UsernameandPasswordenc.Split(":");
                 var username = UsernameandPassword[0];
                 var password = UsernameandPassword[1];
-                if (username == "Admin" && password == "123456") 
+
+                var result = await _userService.IsUser(username, password);
+                if (result) 
                 {
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("asdhjashdjaksdhajksdhajksdasd"));
                     var signInCred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);

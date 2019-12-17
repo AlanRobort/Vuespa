@@ -19,6 +19,13 @@ namespace Webapi
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.AddJsonFile("appsettings.json",
+                                    optional: false,//不可选
+                                    reloadOnChange: false
+                                    );
+            })
                 .UseStartup<Startup>();
 
         //Create DefaultBuilder

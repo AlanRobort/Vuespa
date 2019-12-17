@@ -16,5 +16,6 @@ namespace Service
 
         Task<IEnumerable<ClientAccessTimes>> GetClientAccessTimes();
         Task<PaginatedList<ClientAddressInfo>> GetAllAddressInfo(PaginationParamer paginationParamer);
+        Task<IEnumerable<ClientAddressInfo>> GetClientAddressInfos(int id, int num);
     }
 }

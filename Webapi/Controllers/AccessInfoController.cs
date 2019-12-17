@@ -33,8 +33,15 @@ namespace Webapi.Controllers
         //    return Ok(result);
         //}
 
+        [HttpGet("GetIdnumResult/{id}/{num}")]
+        public async Task<IActionResult> GetIdnumResult(int id,int num)
+        {
+            var result = await _clientInfoService.GetClientAddressInfos(id, num);
+            return Ok(result);
+        }
 
-        [HttpGet(Name= "GetAccessinfo")]
+
+        [HttpGet("GetAccessinfoAll")]
         public async Task<IActionResult> GetAccessinfoAll([FromQuery] PaginationParamer paginationParamer) 
         {
             //PaginationParamer paginationParamer = new PaginationParamer();
@@ -94,5 +101,7 @@ namespace Webapi.Controllers
                
             }
         }
+
+        
     }
 }

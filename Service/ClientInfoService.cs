@@ -55,6 +55,21 @@ namespace Service
           return result;
         }
 
+        //查询ID=x以后的y条数据
+        //iD=?,y=?
+        //select top 10 * from A where id not in (select top 30 id from A)
+        public async Task<IEnumerable<ClientAddressInfo>> GetClientAddressInfos(int id,int num) 
+        {
+            var sqldata = _studentDbContext.clientAddressInfos;
+            var result = from i in sqldata
+                         where i.Id > id && i.Id < id + num
+                         select i;
+
+            var resultlist = await result.ToListAsync();
+            return resultlist;
+        }
+
+
         public bool saveClientAddress(string ClientIpAddress)
         {
             if (ClientIpAddress!=null) 

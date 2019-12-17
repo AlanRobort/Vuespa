@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model;
@@ -9,6 +11,7 @@ using Service;
 
 namespace Webapi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class StudentController : Controller
     {
@@ -24,6 +27,9 @@ namespace Webapi.Controllers
         [HttpGet]
         public async Task<IEnumerable<Student>> GetAllStudent()
         {
+            var identity = (ClaimsIdentity)User.Identity;
+            var aud = identity.Claims.FirstOrDefault(x => x.Type.ToString() == "audience");
+
             var result = await _studentservice.GetAll();
             if (result==null) {
                 Response.StatusCode = 500;

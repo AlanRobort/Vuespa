@@ -72,6 +72,7 @@ namespace Service
         {
            
             var result = await _student.users.FirstOrDefaultAsync(x => x.Id == usermodel.Id);
+
             return result;
         }
 
